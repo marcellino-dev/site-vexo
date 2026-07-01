@@ -29,6 +29,12 @@ const features = [
   },
 ];
 
+// Arredonda para evitar diferenças de ponto flutuante entre servidor e cliente
+// (ex: 36.698729810778076 no servidor vs 36.69872981077808 no cliente)
+function round(value: number, decimals = 3) {
+  return Number(value.toFixed(decimals));
+}
+
 function DeployVisual() {
   return (
     <svg viewBox="0 0 200 160" className="w-full h-full">
@@ -92,14 +98,16 @@ function AIVisual() {
       {[0, 1, 2, 3, 4, 5].map((i) => {
         const angle = (i * 60) * (Math.PI / 180);
         const radius = 50;
+        const cx = round(100 + Math.cos(angle) * radius);
+        const cy = round(80 + Math.sin(angle) * radius);
         return (
           <g key={i}>
             {/* Connection line */}
             <line
               x1="100"
               y1="80"
-              x2={100 + Math.cos(angle) * radius}
-              y2={80 + Math.sin(angle) * radius}
+              x2={cx}
+              y2={cy}
               stroke="currentColor"
               strokeWidth="1"
               opacity="0.3"
@@ -115,8 +123,8 @@ function AIVisual() {
             
             {/* Outer node */}
             <circle
-              cx={100 + Math.cos(angle) * radius}
-              cy={80 + Math.sin(angle) * radius}
+              cx={cx}
+              cy={cy}
               r="6"
               fill="none"
               stroke="currentColor"
